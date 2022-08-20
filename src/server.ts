@@ -33,6 +33,16 @@ async function main() {
         logger.debug(`pid: ${process.pid}`)
     })
 
+    function onClose() {
+        logger.debug('graceful shutdown started')
+        server.close(() => {
+            logger.debug('graceful shutdown complete')
+            process.exit(1)
+        })
+    }
+    process.on('SIGINT', onClose)
+    process.on('SIGTERM', onClose)
+
 }
 main().catch(err => {
     console.log(err)
