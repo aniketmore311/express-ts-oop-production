@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { injectable, singleton } from "tsyringe";
 import IErrorHandler from "../../types/IErrorHandler";
 
+@injectable()
+@singleton()
 export default class ErrorHandler implements IErrorHandler {
     constructor(){
         this.use = this.use.bind(this)

@@ -1,18 +1,15 @@
 import { Application, Request, Response, Router } from "express"
-import { body } from "express-validator";
-import Validate from "../lib/middleware/Validate";
+import { injectable, singleton } from "tsyringe";
 import IController from "../types/IController"
 
+@injectable()
+@singleton()
 export default class HealthController implements IController {
 
     register(app: Application) {
         const router = Router();
         router.get('/', this.getHealthStatus.bind(this));
         router.get('/healthcheck', this.getHealthStatus.bind(this));
-        router.post('/test', [
-            body('email').notEmpty().withMessage('email is required'),
-            new Validate().use()
-        ], this.getHealthStatus.bind(this))
         app.use("/", router)
     }
 

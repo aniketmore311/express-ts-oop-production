@@ -2,12 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { inject, injectable, singleton } from "tsyringe";
 import { Logger } from "winston";
 import IErrorHandler from "../../types/IErrorHandler";
+import tokens from "../../types/tokens";
 
 @injectable()
 @singleton()
 export default class ErrorLogger implements IErrorHandler {
     constructor(
-        @inject('Logger')
+        @inject(tokens.Logger)
         private readonly logger: Logger
     ) {
         this.use = this.use.bind(this)

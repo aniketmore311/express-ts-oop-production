@@ -2,7 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import createHttpError from "http-errors";
 import IMiddleware from "../../types/IMiddleware";
 import { validationResult } from 'express-validator'
+import { injectable, singleton } from "tsyringe";
 
+@injectable()
+@singleton()
 export default class Validate implements IMiddleware {
     constructor() {
         this.use = this.use.bind(this)

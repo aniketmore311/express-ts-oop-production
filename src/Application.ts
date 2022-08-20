@@ -21,13 +21,15 @@ export default class Application {
         middlware: Handler[],
         controllers: IController[],
         errorHandlers: ErrorRequestHandler[]
+        logger: Logger,
+        config: IConfig
     }) {
         this.expressApp = express()
         this.controllers = opts.controllers;
         this.middlware = opts.middlware;
         this.errorHandlers = opts.errorHandlers;
-        this.logger = container.resolve<Logger>('Logger');
-        this.config = container.resolve<IConfig>('IConfig');
+        this.logger = opts.logger;
+        this.config = opts.config;
         this.init()
     }
 

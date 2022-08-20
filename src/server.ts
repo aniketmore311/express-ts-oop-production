@@ -4,27 +4,32 @@ import { config as loadEnv } from "dotenv";
 loadEnv()
 import "./setup/tsyringe"
 import Application from "./Application"
-import HealthController from "./controllers/HealthController";
-import NotFoundController from "./controllers/NotFoundController";
 import ErrorHandler from "./lib/middleware/ErrorHandler";
 import { container } from "tsyringe";
 import http from 'http'
 import { IConfig } from "config";
 import { Logger } from "winston";
 import ErrorLogger from "./lib/middleware/ErrorLogger";
+import IController from "./types/IController";
+import tokens from "./types/tokens";
 
 async function main() {
 
-    const config = container.resolve<IConfig>('IConfig')
-    const logger = container.resolve<Logger>('Logger')
-    const errorLogger = container.resolve<ErrorLogger>('ErrorLogger');
+    const config = container.resolve<IConfig>(tokens.IConfig)
+    const logger = container.resolve<Logger>(tokens.Logger)
+    const errorLogger = container.resolve<ErrorLogger>(tokens.ErrorLogger);
+    const errorHandler = container.resolve<ErrorHandler>(tokens.ErrorHandler);
+    const healthController = container.resolve<IController>(tokens.HealthController);
+    const notFoundController = container.resolve<IController>(tokens.NotFoundController);
 
     const port = config.get<string>("server.port");
 
     const app = new Application({
-        controllers: [new HealthController(), new NotFoundController()],
+        controllers: [healthController, notFoundController],
         middlware: [],
-        errorHandlers: [errorLogger.use(), new ErrorHandler().use()]
+        errorHandlers: [errorLogger.use(), errorHandler.use()],
+        logger: logger,
+        config: config
     });
 
     const server = http.createServer(app.getExpressApp());

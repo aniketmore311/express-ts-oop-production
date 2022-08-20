@@ -1,17 +1,24 @@
 import { container, instanceCachingFactory } from "tsyringe";
 import config, { IConfig } from 'config'
-import loggerFactory from "../lib/utils/loggerFactor";
 import { Logger } from "winston";
-import ErrorLogger from "../lib/middleware/ErrorLogger";
+import itk from "../types/tokens";
 
-container.register<IConfig>("IConfig", {
+import loggerFactory from "../lib/utils/loggerFactor";
+import ErrorLogger from "../lib/middleware/ErrorLogger";
+import ErrorHandler from "../lib/middleware/ErrorHandler";
+import Validate from "../lib/middleware/Validate";
+import HealthController from "../controllers/HealthController";
+import NotFoundController from "../controllers/NotFoundController";
+
+container.register<IConfig>(itk.IConfig, {
     useFactory: instanceCachingFactory<IConfig>((c) => {
         return config
     })
 })
-container.register<Logger>("Logger", {
+
+container.register<Logger>(itk.Logger, {
     useFactory: instanceCachingFactory<Logger>(c => {
-        const config = c.resolve<IConfig>('IConfig');
+        const config = c.resolve<IConfig>(itk.IConfig);
         const logger = loggerFactory({
             config
         })
@@ -19,6 +26,23 @@ container.register<Logger>("Logger", {
     })
 })
 
-container.register<ErrorLogger>('ErrorLogger', {
+//controllers
+container.register<HealthController>(itk.HealthController, {
+    useClass: HealthController
+})
+container.register<NotFoundController>(itk.NotFoundController, {
+    useClass: NotFoundController
+})
+
+//middleware
+container.register<ErrorLogger>(itk.ErrorLogger, {
     useClass: ErrorLogger
+})
+
+container.register<ErrorHandler>(itk.ErrorHandler, {
+    useClass: ErrorHandler
+})
+
+container.register<Validate>(itk.Validate, {
+    useClass: Validate
 })

@@ -1,7 +1,10 @@
 import { Application, NextFunction, Request, Response, Router } from "express"
 import createHttpError from "http-errors"
+import { injectable, singleton } from "tsyringe"
 import IController from "../types/IController"
 
+@injectable()
+@singleton()
 export default class NotFoundController implements IController {
 
     register(app: Application) {
