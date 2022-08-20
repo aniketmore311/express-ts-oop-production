@@ -1,4 +1,5 @@
 import "reflect-metadata"
+import 'make-promises-safe'
 import { config as loadEnv } from "dotenv";
 loadEnv()
 import "./setup/tsyringe"
